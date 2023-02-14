@@ -1,6 +1,9 @@
 import tkinter as tk
 import client
 
+# Inicializar el socket del cliente
+client_socket = client.start_client()
+
 # Crear la ventana raíz
 root = tk.Tk()
 
@@ -32,25 +35,29 @@ label.pack()
 
 # Crear los botones y asignar acciones
 def on_button1_click():
-    print("El botón 1 ha sido presionado")
+    response = client.submit_request(client_socket, "El botón 1 ha sido presionado")
+    print(response,"Botón 1")
 
 button1 = tk.Button(root, text="Botón 1", command=on_button1_click)
 button1.pack()
 
 def on_button2_click():
-    print("El botón 2 ha sido presionado")
+    response = client.submit_request(client_socket, "El botón 2 ha sido presionado")
+    print(response,"Botón 2")
 
 button2 = tk.Button(root, text="Botón 2", command=on_button2_click)
 button2.pack()
 
 def on_button3_click():
-    print("El botón 3 ha sido presionado")
+    response = client.submit_request(client_socket, "El botón 3 ha sido presionado")
+    print(response,"Botón 3")
 
 button3 = tk.Button(root, text="Botón 3", command=on_button3_click)
 button3.pack()
 
 def on_button4_click():
-    print("El botón 4 ha sido presionado")
+    response = client.submit_request(client_socket, "El botón 4 ha sido presionado")
+    print(response,"Botón 4")
 
 button4 = tk.Button(root, text="Botón 4", command=on_button4_click)
 button4.pack()

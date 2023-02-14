@@ -1,22 +1,25 @@
 import socket
 
-# Inicializar el socket del cliente
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def start_client():
+    # Inicializar el socket del cliente
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Obtener el host y el puerto del servidor
-host = socket.gethostname()
-port = 12345
+    # Obtener el host y el puerto del servidor
+    host = socket.gethostname()
+    port = 12345
 
-# Conectarse al servidor
-client_socket.connect((host, port))
+    # Conectarse al servidor
+    client_socket.connect((host, port))
+    return client_socket
 
-# Enviar una solicitud al servidor
-request = "Hola servidor, ¿cómo estás?"
-client_socket.send(request.encode())
+def submit_request(client_socket,request):
+    # Enviar una solicitud al servidor
+    client_socket.send(request.encode())
 
-# Recibir la respuesta del servidor
-response = client_socket.recv(1024)
-print("Respuesta del servidor:", response.decode())
+    # Recibir la respuesta del servidor
+    response = client_socket.recv(1024)
+    return (response.decode())
 
-# Cerrar el socket del cliente
-client_socket.close()
+def close_socket(client_socket):
+    # Cerrar el socket del cliente
+    client_socket.close()
