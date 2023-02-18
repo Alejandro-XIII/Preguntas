@@ -1,5 +1,16 @@
 import tkinter as tk
 import client
+import pandas as pd
+import xlrd
+import openpyxl
+
+
+#abrimos el archivo de excel que posee las preguntas
+preguntas ="Questions.xlsx"
+def leer_celda(filename, column, row): #funcion para leer una sola celda en especifico
+    return pd.read_excel(filename, skiprows=row - 1, usecols=column, nrows=1, header=None, names=["Value"]).iloc[0]["Value"]
+print(leer_celda(preguntas,"A",1))
+
 
 # Inicializar el socket del cliente
 client_socket = client.start_client()
@@ -35,8 +46,9 @@ frame.place(x=0, y=0)
 
 
 
-# Crear un cuadro de texto
-label = tk.Label(frame, text="Este es un cuadro de texto")
+# Crear los cuadros de texto
+label = tk.Label(frame, text=(leer_celda(preguntas,"A",1)))
+questionA = tk.Label(frame)
 label.pack()
 label.place(x=100, y=100)
 
@@ -46,6 +58,7 @@ label.place(x=100, y=100)
 def on_button1_click():
     response = client.submit_request(client_socket, "El botón 1 ha sido presionado")
     print(response,"Botón 1")
+
 
 button1 = tk.Button(frame, text="Botón 1", command=on_button1_click)
 button1.pack()
@@ -65,7 +78,7 @@ def on_button3_click():
 
 button3 = tk.Button(frame, text="Botón 3", command=on_button3_click)
 button3.pack()
-button3.place(x=250,y=300)
+button3.place(x=110,y=350)
 
 def on_button4_click():
     response = client.submit_request(client_socket, "El botón 4 ha sido presionado")
@@ -73,7 +86,7 @@ def on_button4_click():
 
 button4 = tk.Button(frame, text="Botón 4", command=on_button4_click)
 button4.pack()
-button4.place(x=250,y=350)
+button4.place(x=390,y=350)
 
 # Ejecutar el bucle de eventos de tkinter
 root.mainloop()
