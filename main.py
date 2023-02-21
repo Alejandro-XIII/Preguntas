@@ -1,16 +1,47 @@
 import tkinter as tk
-import client
+from tkinter import *
+import Client
 from PIL import ImageTk, Image
 
+puntaje = 0
 
-# Inicializar el socket del cliente
-client_socket = client.start_client()
+# Actualizar los datos de la ventana
+def refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,punto):
+    global puntaje
+    puntaje += punto
+
+    #Agregar texto de pregunta
+    text_widget.config(state="normal")
+    text_widget.delete(1.0, END)
+    text_widget.tag_configure("centered", justify="center")
+    text = "Puntaje: " + str(puntaje) + "\n" + data_list[0]
+    text_widget.insert("1.0", text, "centered")
+    text_widget.config(state="disabled")
+
+    #Agregar texto de puntaje
+    text = "\t             Historial \n \n"
+    for i in range(1,11):
+        text = text + str(i) + ". " + " Nombre" + "\t 0" + "\n"
+    text_score.insert('1.0', text)
+    text_score.config(state="disabled")
+
+    #Agregar texto a los botones
+    button1.config(text=data_list[1])
+    button2.config(text=data_list[2])
+    button3.config(text=data_list[3])
+    button4.config(text=data_list[4])
+
+# Inicializar el socket del cliente 
+client_socket = Client.start_client()
+
+# Pedir datos del juego
+data_list = Client.submit_request(client_socket, " pidiendo datos").split('\n')
 
 # Crear la ventana raíz
 root = tk.Tk()
 
 # Asignar un título a la ventana
-root.title("Mi ventana en Python")
+root.title("Questions")
 
 # Configurar el tamaño de la ventana
 root.geometry("800x600")
@@ -37,7 +68,7 @@ frame.pack()
 frame.place(x=0, y=0)
 
 # Cargar la imagen
-image = Image.open("mi_imagen.png")
+image = Image.open("assets/mi_imagen.png")
 photo = ImageTk.PhotoImage(image)
 
 # Crear un Label para mostrar la imagen en el Frame
@@ -45,53 +76,76 @@ label = tk.Label(frame, image=photo)
 label.image = photo
 label.pack()
 
-# Crear un cuadro de texto
-text_widget = tk.Text(frame,font=("Times New Roman", 16), width=20, height=5, bg='light blue')
+# Crear un cuadro de texto para las preguntas
+text_widget = tk.Text(frame,font=("Times New Roman", 16), width=20, height=5, bg='white')
 text_widget.pack()
-text_widget.place(x=13, y=13)
-text_widget.config(width=70, height=12)
+text_widget.place(x=14, y=13)
+text_widget.config(width=34, height=12)
 
-#Agregar texto
-text = "¿Cuál es la relación entre la exploración espacial y la investigación científica, y cómo han evolucionado estas áreas de conocimiento a lo largo de la historia, desde los primeros viajes al espacio hasta las misiones actuales y los planes futuros para la exploración espacial?"
-text_widget.tag_configure("centered", justify="center")
-text_widget.insert("1.0", text, "centered")
+# Crear un cuadro de texto para el puntaje
+text_score = tk.Text(frame,font=("Times New Roman", 16), width=20, height=5, bg='white')
+text_score.pack()
+text_score.place(x=407, y=13)
+text_score.config(width=34, height=12)
 
 # Crear los botones y asignar acciones
 def on_button1_click():
-    response = client.submit_request(client_socket, "El botón 1 ha sido presionado")
-    print(response,"Botón 1")
+    data_list = Client.submit_request(client_socket, " pidiendo datos").split('\n')
 
-button1 = tk.Button(frame, text="Respuesta 1", font=("Times New Roman", 16), command=on_button1_click, bg='light blue')
+    # Verifica la opción correcta
+    if data_list[5] == data_list[1]:     
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1)
+    else:
+       refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0) 
+
+button1 = tk.Button(frame, font=("Times New Roman", 16), command=on_button1_click, bg='light blue')
 button1.pack()
 button1.place(x=13,y=305)
 button1.config(width=31, height=5)
 
 def on_button2_click():
-    response = client.submit_request(client_socket, "El botón 2 ha sido presionado")
-    print(response,"Botón 2")
+    data_list = Client.submit_request(client_socket, " pidiendo datos").split('\n')
 
-button2 = tk.Button(frame, text="Respuesta 2", font=("Times New Roman", 16), command=on_button2_click,bg='light blue')
+    # Verifica la opción correcta
+    if data_list[5] == data_list[2]:     
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1)
+    else:
+       refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0) 
+
+button2 = tk.Button(frame, font=("Times New Roman", 16), command=on_button2_click,bg='light blue')
 button2.pack()
 button2.place(x=13,y=450)
 button2.config(width=31, height=5)
 
 def on_button3_click():
-    response = client.submit_request(client_socket, "El botón 3 ha sido presionado")
-    print(response,"Botón 3")
+    data_list = Client.submit_request(client_socket, " pidiendo datos").split('\n')
+    
+    # Verifica la opción correcta
+    if data_list[5] == data_list[3]:     
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1)
+    else:
+       refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0) 
 
-button3 = tk.Button(frame, text="Respuesta 3", font=("Times New Roman", 16), command=on_button3_click,bg='light blue')
+button3 = tk.Button(frame, font=("Times New Roman", 16), command=on_button3_click,bg='light blue')
 button3.pack()
 button3.place(x=406,y=305)
 button3.config(width=31, height=5)
 
 def on_button4_click():
-    response = client.submit_request(client_socket, "El botón 4 ha sido presionado")
-    print(response,"Botón 4")
+    data_list = Client.submit_request(client_socket, " pidiendo datos").split('\n')
+    
+    # Verifica la opción correcta
+    if data_list[5] == data_list[4]:     
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1)
+    else:
+       refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0) 
 
-button4 = tk.Button(frame, text="Respuesta 4", font=("Times New Roman", 16), command=on_button4_click,bg='light blue')
+button4 = tk.Button(frame, font=("Times New Roman", 16), command=on_button4_click,bg='light blue')
 button4.pack()
 button4.place(x=405,y=450)
 button4.config(width=31, height=5)
+
+refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0)
 
 # Ejecutar el bucle de eventos de tkinter
 root.mainloop()

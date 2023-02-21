@@ -6,6 +6,7 @@ def start_client():
 
     # Obtener el host y el puerto del servidor
     host = socket.gethostname()
+    #host = '192.168.18.36'
     port = 12345
 
     # Conectarse al servidor
