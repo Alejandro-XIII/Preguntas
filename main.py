@@ -23,6 +23,7 @@ def refresh_data(data_list,text_widget,text_score,button1,button2,button3,button
     text_widget.config(state="disabled")
 
     #Agregar texto de puntaje
+    text_score.config(state="normal")
     text = "\t             Historial \n \n"
     for i in range(1,11):
         text = text + str(i) + ". " + data_list[i+5+(i-1)] + "\t" + data_list[i+6+(i-1)] + "\n"
