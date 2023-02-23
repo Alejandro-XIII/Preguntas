@@ -1,27 +1,31 @@
 import tkinter as tk
 from tkinter import *
+from tkinter import simpledialog
 import Client
 from PIL import ImageTk, Image
 
 puntaje = 0
 
 # Actualizar los datos de la ventana
-def refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,punto):
+def refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,punto,answer_Text):
     global puntaje
-    puntaje += punto
+    if punto == 0:
+        puntaje = 0
+    else:    
+        puntaje += punto
 
     #Agregar texto de pregunta
     text_widget.config(state="normal")
     text_widget.delete(1.0, END)
     text_widget.tag_configure("centered", justify="center")
-    text = "Puntaje: " + str(puntaje) + "\n" + data_list[0]
+    text = answer_Text + "\n \n Puntaje: " + str(puntaje) + "\n \n" + data_list[0]
     text_widget.insert("1.0", text, "centered")
     text_widget.config(state="disabled")
 
     #Agregar texto de puntaje
     text = "\t             Historial \n \n"
     for i in range(1,11):
-        text = text + str(i) + ". " + " Nombre" + "\t 0" + "\n"
+        text = text + str(i) + ". " + data_list[i+5+(i-1)] + "\t" + data_list[i+6+(i-1)] + "\n"
     text_score.insert('1.0', text)
     text_score.config(state="disabled")
 
@@ -35,10 +39,13 @@ def refresh_data(data_list,text_widget,text_score,button1,button2,button3,button
 client_socket = Client.start_client()
 
 # Pedir datos del juego
-data_list = Client.submit_request(client_socket, " pidiendo datos").split('\n')
+data_list = Client.submit_request(client_socket, " pidiendo pregunta").split('\n')
 
 # Crear la ventana raíz
 root = tk.Tk()
+root.withdraw()
+name = simpledialog.askstring("Nombre", "Por favor, escriba su nombre:")
+root.deiconify()
 
 # Asignar un título a la ventana
 root.title("Questions")
@@ -48,10 +55,6 @@ root.geometry("800x600")
 
 # Deshabilitar la opción de maximizar la ventana
 root.resizable(False, False)
-
-# Obtener las dimensiones de la pantalla
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
 
 # Calcular la ubicación para centrarl la ventana
 screen_width = root.winfo_screenwidth()
@@ -90,27 +93,31 @@ text_score.config(width=34, height=12)
 
 # Crear los botones y asignar acciones
 def on_button1_click():
-    data_list = Client.submit_request(client_socket, " pidiendo datos").split('\n')
-
     # Verifica la opción correcta
-    if data_list[5] == data_list[1]:     
-        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1)
+    global data_list
+    answer = data_list[5]
+    if answer == data_list[1]:  
+        data_list = Client.submit_request(client_socket, " pidiendo pregunta").split('\n')      
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1,"¡CORRECTO!")
     else:
-       refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0) 
-
+        data_list = Client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n') 
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0,"Perdiste era: " + answer) 
+    
 button1 = tk.Button(frame, font=("Times New Roman", 16), command=on_button1_click, bg='light blue')
 button1.pack()
 button1.place(x=13,y=305)
 button1.config(width=31, height=5)
 
 def on_button2_click():
-    data_list = Client.submit_request(client_socket, " pidiendo datos").split('\n')
-
     # Verifica la opción correcta
-    if data_list[5] == data_list[2]:     
-        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1)
+    global data_list
+    answer = data_list[5]
+    if answer == data_list[2]:  
+        data_list = Client.submit_request(client_socket, " pidiendo pregunta").split('\n')    
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1,"¡CORRECTO!")
     else:
-       refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0) 
+        data_list = Client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n') 
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0,"Perdiste era: " + answer) 
 
 button2 = tk.Button(frame, font=("Times New Roman", 16), command=on_button2_click,bg='light blue')
 button2.pack()
@@ -118,13 +125,15 @@ button2.place(x=13,y=450)
 button2.config(width=31, height=5)
 
 def on_button3_click():
-    data_list = Client.submit_request(client_socket, " pidiendo datos").split('\n')
-    
     # Verifica la opción correcta
-    if data_list[5] == data_list[3]:     
-        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1)
+    global data_list
+    answer = data_list[5]
+    if answer == data_list[3]:   
+        data_list = Client.submit_request(client_socket, " pidiendo pregunta").split('\n')   
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1,"¡CORRECTO!")
     else:
-       refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0) 
+        data_list = Client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n') 
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0,"Perdiste era: " + answer) 
 
 button3 = tk.Button(frame, font=("Times New Roman", 16), command=on_button3_click,bg='light blue')
 button3.pack()
@@ -132,20 +141,22 @@ button3.place(x=406,y=305)
 button3.config(width=31, height=5)
 
 def on_button4_click():
-    data_list = Client.submit_request(client_socket, " pidiendo datos").split('\n')
-    
     # Verifica la opción correcta
-    if data_list[5] == data_list[4]:     
-        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1)
+    global data_list
+    answer = data_list[5]
+    if answer == data_list[4]:    
+        data_list = Client.submit_request(client_socket, " pidiendo pregunta").split('\n')  
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1,"¡CORRECTO!")
     else:
-       refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0) 
+        data_list = Client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n')
+        refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0,"Perdiste era: " + answer)  
 
 button4 = tk.Button(frame, font=("Times New Roman", 16), command=on_button4_click,bg='light blue')
 button4.pack()
 button4.place(x=405,y=450)
 button4.config(width=31, height=5)
 
-refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0)
+refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0," ")
 
 # Ejecutar el bucle de eventos de tkinter
 root.mainloop()
