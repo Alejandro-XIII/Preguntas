@@ -1,6 +1,6 @@
 import socket
 import threading
-import Question
+import question
 
 # Define una función para recibir los datos del cliente
 def receive_data(client_socket,client_address):
@@ -13,15 +13,15 @@ def receive_data(client_socket,client_address):
         if client_data.decode() == " pidiendo pregunta":
             print("Datos recibidos del cliente: ", client_address, client_data.decode())
             # Enviar datos de la pregunta como respuesta al cliente
-            data_list = Question.generate_question()
+            data_list = question.generate_question()
             client_socket.send('\n'.join(data_list).encode())
         else:
             client_data = client_data.decode().split('\n')
             new_data = (client_data[0], int(client_data[1]))
             print("Actualizando puntaje con: ",new_data)
-            Question.update_score(new_data)
+            question.update_score(new_data)
             print("Datos recibidos del cliente: ", client_address, " pidiendo pregunta")
-            data_list = Question.generate_question()
+            data_list = question.generate_question()
             client_socket.send('\n'.join(data_list).encode())
 
     # Cerrar el socket del cliente
@@ -32,7 +32,6 @@ server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Obtener el host y el puerto del servidor
 host = socket.gethostname()
-#host = '192.168.18.36'
 port = 12345
 
 # Vincular el socket del servidor a una dirección y un puerto específicos

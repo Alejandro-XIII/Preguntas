@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import simpledialog
-import Client
+import client
 from PIL import ImageTk, Image
 
 puntaje = 0
@@ -24,10 +24,11 @@ def refresh_data(data_list,text_widget,text_score,button1,button2,button3,button
 
     #Agregar texto de puntaje
     text_score.config(state="normal")
+    text_score.delete(1.0, END)
     text = "\t             Historial \n \n"
     for i in range(1,11):
         text = text + str(i) + ". " + data_list[i+5+(i-1)] + "\t" + data_list[i+6+(i-1)] + "\n"
-    text_score.insert('1.0', text)
+    text_score.insert('1.0', text.strip("\n"))
     text_score.config(state="disabled")
 
     #Agregar texto a los botones
@@ -37,10 +38,10 @@ def refresh_data(data_list,text_widget,text_score,button1,button2,button3,button
     button4.config(text=data_list[4])
 
 # Inicializar el socket del cliente 
-client_socket = Client.start_client()
+client_socket = client.start_client()
 
 # Pedir datos del juego
-data_list = Client.submit_request(client_socket, " pidiendo pregunta").split('\n')
+data_list = client.submit_request(client_socket, " pidiendo pregunta").split('\n')
 
 # Crear la ventana raíz
 root = tk.Tk()
@@ -81,13 +82,13 @@ label.image = photo
 label.pack()
 
 # Crear un cuadro de texto para las preguntas
-text_widget = tk.Text(frame,font=("Times New Roman", 16), width=20, height=5, bg='white')
+text_widget = tk.Text(frame,font=("Times New Roman", 16), bg='white')
 text_widget.pack()
 text_widget.place(x=14, y=13)
 text_widget.config(width=34, height=12)
 
 # Crear un cuadro de texto para el puntaje
-text_score = tk.Text(frame,font=("Times New Roman", 16), width=20, height=5, bg='white')
+text_score = tk.Text(frame,font=("Times New Roman", 16), bg='white')
 text_score.pack()
 text_score.place(x=407, y=13)
 text_score.config(width=34, height=12)
@@ -98,10 +99,10 @@ def on_button1_click():
     global data_list
     answer = data_list[5]
     if answer == data_list[1]:  
-        data_list = Client.submit_request(client_socket, " pidiendo pregunta").split('\n')      
+        data_list = client.submit_request(client_socket, " pidiendo pregunta").split('\n')      
         refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1,"¡CORRECTO!")
     else:
-        data_list = Client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n') 
+        data_list = client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n') 
         refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0,"Perdiste era: " + answer) 
     
 button1 = tk.Button(frame, font=("Times New Roman", 16), command=on_button1_click, bg='light blue')
@@ -114,10 +115,10 @@ def on_button2_click():
     global data_list
     answer = data_list[5]
     if answer == data_list[2]:  
-        data_list = Client.submit_request(client_socket, " pidiendo pregunta").split('\n')    
+        data_list = client.submit_request(client_socket, " pidiendo pregunta").split('\n')    
         refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1,"¡CORRECTO!")
     else:
-        data_list = Client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n') 
+        data_list = client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n') 
         refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0,"Perdiste era: " + answer) 
 
 button2 = tk.Button(frame, font=("Times New Roman", 16), command=on_button2_click,bg='light blue')
@@ -130,10 +131,10 @@ def on_button3_click():
     global data_list
     answer = data_list[5]
     if answer == data_list[3]:   
-        data_list = Client.submit_request(client_socket, " pidiendo pregunta").split('\n')   
+        data_list = client.submit_request(client_socket, " pidiendo pregunta").split('\n')   
         refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1,"¡CORRECTO!")
     else:
-        data_list = Client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n') 
+        data_list = client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n') 
         refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0,"Perdiste era: " + answer) 
 
 button3 = tk.Button(frame, font=("Times New Roman", 16), command=on_button3_click,bg='light blue')
@@ -146,10 +147,10 @@ def on_button4_click():
     global data_list
     answer = data_list[5]
     if answer == data_list[4]:    
-        data_list = Client.submit_request(client_socket, " pidiendo pregunta").split('\n')  
+        data_list = client.submit_request(client_socket, " pidiendo pregunta").split('\n')  
         refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,1,"¡CORRECTO!")
     else:
-        data_list = Client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n')
+        data_list = client.submit_request(client_socket, name +"\n"+str(puntaje)).split('\n')
         refresh_data(data_list,text_widget,text_score,button1,button2,button3,button4,0,"Perdiste era: " + answer)  
 
 button4 = tk.Button(frame, font=("Times New Roman", 16), command=on_button4_click,bg='light blue')
